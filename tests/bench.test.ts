@@ -176,8 +176,7 @@ describe('PluginManager', () => {
       const languages = manager.listLanguages();
       expect(languages).toContain('typescript');
       expect(languages).toContain('ts');
-      expect(languages).toContain('javascript');
-      expect(languages).toContain('js');
+      expect(languages).toContain('html');
     });
   });
 

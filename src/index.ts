@@ -14,6 +14,21 @@ export { CostTracker } from './cost-tracker';
 export { ReportGenerator } from './report-generator';
 export { VERSION as __version__ } from './version';
 
+// Plugin system exports
+export {
+  discoverPlugins,
+  loadEvaluatorClass,
+  isValidEvaluator,
+  getPluginInfo,
+  listPluginPackages,
+} from './plugin-discovery';
+
+export type { PluginInfo, PluginPackageJson } from './plugin-discovery';
+export type { LoadedPlugin } from './plugin-manager';
+
+// HTML Evaluator export
+export { HTMLEvaluator } from './evaluators/html-evaluator';
+
 // Provider exports
 export {
   getModel,

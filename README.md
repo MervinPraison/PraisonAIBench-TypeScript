@@ -18,7 +18,7 @@ Benchmark any LLM with automatic code evaluation, TypeScript/HTML execution, and
 | **💰 Cost & Token Tracking** | Automatic token usage and cost calculation |
 | **📈 HTML Reports** | Beautiful dashboard reports with charts |
 | **⚡ Parallel Execution** | Run tests concurrently |
-| **🔌 Plugin System** | Extensible evaluators for any language |
+| **🔌 Plugin System** | Extensible evaluators for any language ([docs](PLUGIN_SYSTEM.md)) |
 | **🎯 Test Suites** | YAML/JSON test suite support |
 | **🔄 Retry Logic** | Automatic retries with exponential backoff |
 
