@@ -1,53 +1,71 @@
-# PraisonAI Bench TypeScript Evaluator Plugin
+# PraisonAI Bench TypeScript
 
-🔷 A comprehensive TypeScript code evaluation plugin for [PraisonAI Bench](https://github.com/MervinPraison/praisonaibench)
+🚀 **A powerful LLM benchmarking framework for TypeScript code generation**
+
+Benchmark any OpenAI-compatible model with automatic code evaluation, TypeScript execution, and comprehensive HTML reports.
 
 [![Node.js 16+](https://img.shields.io/badge/node-16+-green.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![npm version](https://img.shields.io/npm/v/praisonaibench-typescript.svg)](https://www.npmjs.com/package/praisonaibench-typescript)
 
-## 🎯 Overview
+## 🎯 Features
 
-The TypeScript Evaluator Plugin enables PraisonAI Bench to evaluate TypeScript code through comprehensive multi-stage assessment:
+| Feature | Description |
+|---------|-------------|
+| **🤖 Any OpenAI Model** | GPT-4o, GPT-4o-mini, GPT-3.5-turbo, etc. |
+| **📊 Multi-Stage Evaluation** | Syntax validation, code execution, output comparison |
+| **💰 Cost & Token Tracking** | Automatic token usage and cost calculation |
+| **📈 HTML Reports** | Beautiful dashboard reports with charts |
+| **⚡ Parallel Execution** | Run tests concurrently |
+| **🔌 Plugin System** | Extensible evaluators for any language |
+| **🎯 Test Suites** | YAML/JSON test suite support |
+| **🔄 Retry Logic** | Automatic retries with exponential backoff |
 
-- ✅ **Syntax Validation** (30 points) - TypeScript compiler API-based syntax checking
-- ✅ **Code Execution** (40 points) - Safe subprocess execution via ts-node with timeout protection
-- ✅ **Output Comparison** (30 points) - Fuzzy matching with expected results
+## 📊 Evaluation System
 
-**Total Score: 0-100** | **Pass Threshold: ≥70**
+| Stage | Points | Description |
+|-------|--------|-------------|
+| **Syntax Validation** | 30 | TypeScript compiler API parsing |
+| **Code Execution** | 40 | Safe ts-node subprocess execution |
+| **Output Comparison** | 30 | Fuzzy matching with expected output |
+| **Total** | **100** | Pass threshold: ≥70 |
 
 ## 🚀 Quick Start
 
 ### Installation
 
-#### Install from npm (Recommended)
-
 ```bash
-# Install using npm
+# Install globally
+npm install -g praisonaibench-typescript
+
+# Or install locally
 npm install praisonaibench-typescript
-
-# Or using yarn
-yarn add praisonaibench-typescript
 ```
 
-#### Install from Source
+### Set API Key
 
 ```bash
-# Clone or download the plugin
-cd praisonaibench-typescript
-
-# Install dependencies
-npm install
-
-# Build
-npm run build
+export OPENAI_API_KEY=your_api_key_here
 ```
 
-#### Verify Installation
+### Run Your First Test
 
 ```bash
-# Check that the plugin is loaded
+# Single test
+praisonaibench --test "Write TypeScript code that prints Hello World"
+
+# With specific model
+praisonaibench --test "Calculate factorial of 5" --model gpt-4o-mini
+
+# Run test suite
+praisonaibench --suite tests.yaml --report
+```
+
+### Verify Installation
+
+```bash
+# Check version
 node -e "const { TypeScriptEvaluator } = require('./dist'); console.log('Plugin loaded successfully!');"
 ```
 

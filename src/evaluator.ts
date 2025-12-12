@@ -14,14 +14,7 @@ import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-
-/**
- * Feedback item structure
- */
-export interface FeedbackItem {
-  level: 'success' | 'warning' | 'error' | 'info';
-  message: string;
-}
+import { BaseEvaluator, FeedbackItem, EvaluationResult as BaseEvaluationResult } from './base-evaluator';
 
 /**
  * Score breakdown structure
@@ -44,17 +37,17 @@ export interface EvaluationDetails {
   similarity?: number;
   expected?: string;
   score_breakdown?: ScoreBreakdown;
+  [key: string]: unknown;
 }
 
 /**
  * Evaluation result structure
  */
-export interface EvaluationResult {
-  score: number;
-  passed: boolean;
-  feedback: FeedbackItem[];
+export interface EvaluationResult extends BaseEvaluationResult {
   details: EvaluationDetails;
 }
+
+export { FeedbackItem };
 
 /**
  * Syntax validation result
@@ -97,7 +90,7 @@ interface ExecutionResult {
  * );
  * ```
  */
-export class TypeScriptEvaluator {
+export class TypeScriptEvaluator extends BaseEvaluator {
   private timeout: number;
   private tsNodePath: string | null;
 
@@ -108,6 +101,7 @@ export class TypeScriptEvaluator {
    * @param tsNodePath - Path to ts-node executable (default: uses npx)
    */
   constructor(timeout: number = 5, tsNodePath: string | null = null) {
+    super();
     this.timeout = timeout;
     this.tsNodePath = tsNodePath;
   }
