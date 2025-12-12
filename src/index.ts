@@ -14,6 +14,20 @@ export { CostTracker } from './cost-tracker';
 export { ReportGenerator } from './report-generator';
 export { VERSION as __version__ } from './version';
 
+// Provider exports
+export {
+  getModel,
+  getModelFromString,
+  parseModelString,
+  getConfiguredProviders,
+  getAllProviders,
+  getProviderConfig,
+  isProviderConfigured,
+  PROVIDERS,
+} from './providers';
+
+export type { ProviderName, ProviderConfig } from './providers';
+
 // Re-export types
 export type {
   BenchConfig,

@@ -9,18 +9,19 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 import { BenchAgent, TestResult } from './agent';
+import { ProviderName, parseModelString } from './providers';
 import { CostTracker, CostSummary } from './cost-tracker';
 import { PluginManager } from './plugin-manager';
 import { ReportGenerator } from './report-generator';
 
 export interface BenchConfig {
   default_model?: string;
+  default_provider?: ProviderName;
   output_format?: 'json' | 'csv';
   save_results?: boolean;
   output_dir?: string;
   max_retries?: number;
   timeout?: number;
-  apiKey?: string;
 }
 
 export interface TestConfig {
@@ -64,12 +65,12 @@ export class Bench {
   constructor(config: BenchConfig = {}, enableEvaluation = true) {
     this.config = {
       default_model: config.default_model || 'gpt-4o-mini',
+      default_provider: config.default_provider,
       output_format: config.output_format || 'json',
       save_results: config.save_results ?? true,
       output_dir: config.output_dir || 'output',
       max_retries: config.max_retries || 3,
       timeout: config.timeout || 60,
-      apiKey: config.apiKey,
     };
 
     this.costTracker = new CostTracker();
@@ -139,12 +140,14 @@ export class Bench {
 
     console.log(`🧪 Starting test: ${finalTestName} with model: ${finalModel}`);
 
+    // Parse model to get provider
+    const parsed = parseModelString(finalModel);
+
     // Create agent
     const agent = new BenchAgent({
       name: 'BenchAgent',
-      model: finalModel,
-      instructions: prompt,
-      apiKey: this.config.apiKey,
+      model: parsed.model,
+      provider: parsed.provider,
       maxRetries: this.config.max_retries,
     });
 

@@ -1,17 +1,24 @@
 /**
- * BenchAgent - Core agent for running benchmarks using OpenAI API
+ * BenchAgent - Core agent for running benchmarks using Vercel AI SDK
  *
+ * Supports multiple providers: OpenAI, Anthropic, Google, xAI, Mistral, Groq
  * Provides LLM interaction with retry logic, token tracking, and cost calculation.
  */
 
-import OpenAI from 'openai';
+import { generateText } from 'ai';
 import { CostTracker, TokenUsage, CostInfo } from './cost-tracker';
+import {
+  getModelFromString,
+  parseModelString,
+  ProviderName,
+  PROVIDERS,
+} from './providers';
 
 export interface AgentConfig {
   name?: string;
   model?: string;
+  provider?: ProviderName;
   instructions?: string;
-  apiKey?: string;
   maxRetries?: number;
   timeout?: number;
 }
@@ -21,6 +28,7 @@ export interface TestResult {
   prompt: string;
   response: string | null;
   model: string;
+  provider: ProviderName;
   agent_name: string;
   execution_time: number;
   status: 'success' | 'error';
@@ -32,19 +40,25 @@ export interface TestResult {
 }
 
 /**
- * A simple agent wrapper for running LLM benchmarks.
+ * A multi-provider agent wrapper for running LLM benchmarks.
+ * Supports OpenAI, Anthropic, Google, xAI, Mistral, Groq via Vercel AI SDK.
  */
 export class BenchAgent {
   private name: string;
-  private model: string;
+  private modelString: string;
+  private provider: ProviderName;
   private instructions: string;
-  private client: OpenAI;
   private maxRetries: number;
 
   constructor(config: AgentConfig = {}) {
     this.name = config.name || 'BenchAgent';
-    this.model = config.model || 'gpt-4o-mini';
+    this.modelString = config.model || 'gpt-4o-mini';
     this.maxRetries = config.maxRetries || 3;
+
+    // Parse model string to get provider
+    const parsed = parseModelString(this.modelString);
+    this.provider = config.provider || parsed.provider;
+    this.modelString = parsed.model;
 
     this.instructions =
       config.instructions ||
@@ -52,25 +66,27 @@ export class BenchAgent {
 Provide clear, accurate, and detailed responses.
 Follow instructions precisely and maintain consistency in your responses.`;
 
-    // Initialize OpenAI client
-    const apiKey = config.apiKey || process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      throw new Error(
-        'OpenAI API key is required. Set OPENAI_API_KEY environment variable or pass apiKey in config.'
+    // Validate provider API key
+    const providerConfig = PROVIDERS[this.provider];
+    if (!process.env[providerConfig.envKey]) {
+      console.warn(
+        `⚠️  ${providerConfig.envKey} not set. Provider '${this.provider}' may not work.`
       );
     }
-
-    this.client = new OpenAI({
-      apiKey,
-      timeout: config.timeout || 60000,
-    });
   }
 
   /**
    * Get the model name.
    */
   getModel(): string {
-    return this.model;
+    return this.modelString;
+  }
+
+  /**
+   * Get the provider name.
+   */
+  getProvider(): ProviderName {
+    return this.provider;
   }
 
   /**
@@ -78,6 +94,13 @@ Follow instructions precisely and maintain consistency in your responses.`;
    */
   getName(): string {
     return this.name;
+  }
+
+  /**
+   * Get full model identifier (provider/model).
+   */
+  getFullModelId(): string {
+    return `${this.provider}/${this.modelString}`;
   }
 
   /**
@@ -100,20 +123,22 @@ Follow instructions precisely and maintain consistency in your responses.`;
           await this.sleep(waitTime);
         }
 
-        const completion = await this.client.chat.completions.create({
-          model: this.model,
-          messages: [
-            { role: 'system', content: this.instructions },
-            { role: 'user', content: prompt },
-          ],
+        // Get the model from provider registry
+        const model = getModelFromString(`${this.provider}/${this.modelString}`);
+
+        // Use Vercel AI SDK generateText
+        const result = await generateText({
+          model,
+          system: this.instructions,
+          prompt,
         });
 
         const endTime = Date.now();
-        const response = completion.choices[0]?.message?.content || '';
+        const response = result.text || '';
 
         // Check for empty response
         if (!response || response.trim().length === 0) {
-          const errorMsg = `Agent returned empty response. Check API key for model '${this.model}'.`;
+          const errorMsg = `Agent returned empty response. Check API key for model '${this.modelString}'.`;
           if (attempt < this.maxRetries - 1) {
             console.warn(`⚠️  ${errorMsg} - Retrying...`);
             lastError = errorMsg;
@@ -128,15 +153,16 @@ Follow instructions precisely and maintain consistency in your responses.`;
           );
         }
 
-        // Extract token usage
-        const tokenUsage = this.extractTokenUsage(completion, prompt, response);
+        // Extract token usage from Vercel AI SDK response
+        const tokenUsage = this.extractTokenUsage(result, prompt, response);
         const costInfo = this.calculateCost(tokenUsage);
 
-        const result: TestResult = {
+        const testResult: TestResult = {
           test_name: finalTestName,
           prompt,
           response,
-          model: this.model,
+          model: this.modelString,
+          provider: this.provider,
           agent_name: this.name,
           execution_time: (endTime - startTime) / 1000,
           status: 'success',
@@ -146,13 +172,13 @@ Follow instructions precisely and maintain consistency in your responses.`;
         };
 
         if (attempt > 0) {
-          result.retry_attempts = attempt + 1;
+          testResult.retry_attempts = attempt + 1;
           console.log(`✅ Succeeded after ${attempt + 1} attempt(s)`);
         }
 
-        return result;
+        return testResult;
       } catch (error) {
-        const errorMsg = `Agent '${this.name}' failed with model '${this.model}': ${error instanceof Error ? error.message : String(error)}`;
+        const errorMsg = `Agent '${this.name}' failed with model '${this.provider}/${this.modelString}': ${error instanceof Error ? error.message : String(error)}`;
 
         if (attempt < this.maxRetries - 1) {
           console.warn(`⚠️  ${errorMsg} - Retrying...`);
@@ -199,15 +225,15 @@ Follow instructions precisely and maintain consistency in your responses.`;
   }
 
   private extractTokenUsage(
-    completion: OpenAI.Chat.Completions.ChatCompletion,
+    result: { usage?: { promptTokens?: number; completionTokens?: number; totalTokens?: number } },
     prompt: string,
     response: string
   ): TokenUsage {
-    if (completion.usage) {
+    if (result.usage) {
       return {
-        input_tokens: completion.usage.prompt_tokens,
-        output_tokens: completion.usage.completion_tokens,
-        total_tokens: completion.usage.total_tokens,
+        input_tokens: result.usage.promptTokens || 0,
+        output_tokens: result.usage.completionTokens || 0,
+        total_tokens: result.usage.totalTokens || 0,
         method: 'actual',
       };
     }
@@ -224,7 +250,7 @@ Follow instructions precisely and maintain consistency in your responses.`;
   }
 
   private calculateCost(tokenUsage: TokenUsage): CostInfo {
-    const pricing = CostTracker.getModelPricing(this.model);
+    const pricing = CostTracker.getModelPricing(this.modelString);
     const inputCost =
       (tokenUsage.input_tokens / 1_000_000) * pricing.input;
     const outputCost =
@@ -234,7 +260,7 @@ Follow instructions precisely and maintain consistency in your responses.`;
       total_usd: Math.round((inputCost + outputCost) * 1000000) / 1000000,
       input_cost_usd: Math.round(inputCost * 1000000) / 1000000,
       output_cost_usd: Math.round(outputCost * 1000000) / 1000000,
-      model: this.model,
+      model: this.modelString,
     };
   }
 
@@ -249,7 +275,8 @@ Follow instructions precisely and maintain consistency in your responses.`;
       test_name: testName,
       prompt,
       response: null,
-      model: this.model,
+      model: this.modelString,
+      provider: this.provider,
       agent_name: this.name,
       execution_time: (Date.now() - startTime) / 1000,
       status: 'error',

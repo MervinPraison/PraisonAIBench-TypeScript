@@ -8,6 +8,7 @@
 import { Command } from 'commander';
 import { Bench } from './bench';
 import { VERSION } from './version';
+import { getAllProviders, getConfiguredProviders, PROVIDERS } from './providers';
 import * as fs from 'fs';
 
 const program = new Command();
@@ -20,7 +21,8 @@ program
 // Single test
 program
   .option('--test <prompt>', 'Run a single test with the given prompt')
-  .option('--model <model>', 'Model to use (default: gpt-4o-mini)')
+  .option('--model <model>', 'Model to use (e.g., gpt-4o-mini, claude-3-5-sonnet-latest, gemini-1.5-flash)')
+  .option('--provider <provider>', 'Provider to use (openai, anthropic, google, xai, mistral, groq)')
   .option('--expected <expected>', 'Expected output for comparison');
 
 // Test suite
@@ -36,12 +38,14 @@ program
 // Cross-model testing
 program
   .option('--cross-model <prompt>', 'Run same test across multiple models')
-  .option('--models <models>', 'Comma-separated list of models to test');
+  .option('--models <models>', 'Comma-separated list of models (e.g., openai/gpt-4o,anthropic/claude-3-5-sonnet-latest)');
 
 // Configuration
 program
   .option('--config <file>', 'Configuration file path')
-  .option('--no-eval', 'Disable evaluation system');
+  .option('--no-eval', 'Disable evaluation system')
+  .option('--list-providers', 'List all available providers and models')
+  .option('--list-configured', 'List configured providers (with API keys set)');
 
 // Output options
 program
@@ -54,7 +58,39 @@ async function main() {
   const opts = program.opts();
 
   console.log(`🚀 PraisonAI Bench TypeScript v${VERSION} initialized`);
-  console.log('Using OpenAI API - supports gpt-4o, gpt-4o-mini, gpt-3.5-turbo, etc.');
+
+  // Handle --list-providers
+  if (opts.listProviders) {
+    console.log('\n📋 Available Providers and Models:\n');
+    for (const providerName of getAllProviders()) {
+      const config = PROVIDERS[providerName];
+      const configured = process.env[config.envKey] ? '✅' : '❌';
+      console.log(`${configured} ${providerName.toUpperCase()} (${config.envKey})`);
+      console.log(`   Default: ${config.defaultModel}`);
+      console.log(`   Models: ${config.models.join(', ')}`);
+      console.log();
+    }
+    process.exit(0);
+  }
+
+  // Handle --list-configured
+  if (opts.listConfigured) {
+    const configured = getConfiguredProviders();
+    if (configured.length === 0) {
+      console.log('\n❌ No providers configured. Set API keys in environment variables.');
+    } else {
+      console.log(`\n✅ Configured providers: ${configured.join(', ')}`);
+    }
+    process.exit(0);
+  }
+
+  // Show configured providers
+  const configuredProviders = getConfiguredProviders();
+  if (configuredProviders.length > 0) {
+    console.log(`Configured providers: ${configuredProviders.join(', ')}`);
+  } else {
+    console.log('⚠️  No providers configured. Set API keys (OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.)');
+  }
 
   // Initialize bench
   const bench = new Bench(
@@ -132,7 +168,8 @@ async function main() {
         console.log('\nUsage:');
         console.log('  praisonaibench --test "Your prompt here"');
         console.log('  praisonaibench --suite your_suite.yaml');
-        console.log('  praisonaibench --cross-model "Your prompt" --models gpt-4o,gpt-4o-mini');
+        console.log('  praisonaibench --cross-model "Your prompt" --models openai/gpt-4o,anthropic/claude-3-5-sonnet-latest');
+        console.log('  praisonaibench --list-providers');
         program.help();
         process.exit(1);
       }

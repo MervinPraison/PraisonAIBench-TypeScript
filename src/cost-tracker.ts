@@ -55,24 +55,40 @@ const MODEL_PRICING: Record<string, ModelPricing> = {
 
   // Anthropic Claude Models
   'claude-3-opus-20240229': { input: 15.0, output: 75.0 },
+  'claude-3-opus-latest': { input: 15.0, output: 75.0 },
   'claude-3-sonnet-20240229': { input: 3.0, output: 15.0 },
   'claude-3-haiku-20240307': { input: 0.25, output: 1.25 },
   'claude-3-5-sonnet-20241022': { input: 3.0, output: 15.0 },
+  'claude-3-5-sonnet-latest': { input: 3.0, output: 15.0 },
+  'claude-3-5-haiku-latest': { input: 0.8, output: 4.0 },
 
   // Google Gemini Models
-  'gemini/gemini-1.5-pro': { input: 1.25, output: 5.0 },
-  'gemini/gemini-1.5-flash': { input: 0.075, output: 0.3 },
-  'gemini/gemini-1.5-flash-8b': { input: 0.0375, output: 0.15 },
-  'gemini/gemini-pro': { input: 0.5, output: 1.5 },
+  'gemini-2.0-flash-exp': { input: 0.0, output: 0.0 }, // Free during preview
+  'gemini-1.5-pro': { input: 1.25, output: 5.0 },
+  'gemini-1.5-flash': { input: 0.075, output: 0.3 },
+  'gemini-1.5-flash-8b': { input: 0.0375, output: 0.15 },
+  'gemini-pro': { input: 0.5, output: 1.5 },
 
   // XAI Grok Models
-  'xai/grok-beta': { input: 5.0, output: 15.0 },
-  'xai/grok-code-fast-1': { input: 2.0, output: 6.0 },
+  'grok-beta': { input: 5.0, output: 15.0 },
+  'grok-2-1212': { input: 2.0, output: 10.0 },
+  'grok-2-vision-1212': { input: 2.0, output: 10.0 },
 
-  // Groq Models
-  'groq/llama-3.1-70b-versatile': { input: 0.59, output: 0.79 },
-  'groq/llama-3.1-8b-instant': { input: 0.05, output: 0.08 },
-  'groq/mixtral-8x7b-32768': { input: 0.24, output: 0.24 },
+  // Mistral Models
+  'mistral-large-latest': { input: 2.0, output: 6.0 },
+  'mistral-medium-latest': { input: 2.7, output: 8.1 },
+  'mistral-small-latest': { input: 0.2, output: 0.6 },
+  'pixtral-large-latest': { input: 2.0, output: 6.0 },
+
+  // Groq Models (highly optimized pricing)
+  'llama-3.1-70b-versatile': { input: 0.59, output: 0.79 },
+  'llama-3.1-8b-instant': { input: 0.05, output: 0.08 },
+  'mixtral-8x7b-32768': { input: 0.24, output: 0.24 },
+  'gemma2-9b-it': { input: 0.2, output: 0.2 },
+
+  // DeepSeek Models
+  'deepseek-chat': { input: 0.14, output: 0.28 },
+  'deepseek-reasoner': { input: 0.55, output: 2.19 },
 
   // Default fallback pricing
   default: { input: 1.0, output: 3.0 },
