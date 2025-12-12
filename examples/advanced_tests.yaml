@@ -1,0 +1,71 @@
+# Advanced TypeScript Test Suite
+# Complex challenges for testing TypeScript code generation
+
+tests:
+  - name: "interface_implementation"
+    language: "typescript"
+    prompt: |
+      Write TypeScript code that:
+      1. Defines an interface 'Person' with name (string) and age (number)
+      2. Creates a person object with name "Alice" and age 30
+      3. Prints the person's name
+    expected: "Alice"
+  
+  - name: "generic_function"
+    language: "typescript"
+    prompt: |
+      Write a generic TypeScript function 'identity<T>' that takes a value and returns it.
+      Call it with the string "hello" and print the result.
+    expected: "hello"
+  
+  - name: "class_with_methods"
+    language: "typescript"
+    prompt: |
+      Write a TypeScript class 'Calculator' with:
+      1. A method 'add' that takes two numbers and returns their sum
+      2. Create an instance and call add(10, 20)
+      3. Print the result
+    expected: "30"
+  
+  - name: "async_await"
+    language: "typescript"
+    prompt: |
+      Write TypeScript code that:
+      1. Creates an async function that returns a Promise resolving to "Done"
+      2. Awaits the result and prints it
+    expected: "Done"
+  
+  - name: "array_map_filter"
+    language: "typescript"
+    prompt: |
+      Write TypeScript code that:
+      1. Creates an array [1, 2, 3, 4, 5, 6]
+      2. Filters to keep only even numbers
+      3. Maps to double each number
+      4. Prints the sum of the result
+    expected: "24"
+  
+  - name: "object_destructuring"
+    language: "typescript"
+    prompt: |
+      Write TypeScript code that:
+      1. Creates an object { x: 10, y: 20, z: 30 }
+      2. Uses destructuring to extract x and y
+      3. Prints x + y
+    expected: "30"
+  
+  - name: "enum_usage"
+    language: "typescript"
+    prompt: |
+      Write TypeScript code that:
+      1. Defines an enum 'Color' with Red=1, Green=2, Blue=3
+      2. Prints the value of Color.Green
+    expected: "2"
+  
+  - name: "type_guard"
+    language: "typescript"
+    prompt: |
+      Write TypeScript code that:
+      1. Creates a function that checks if a value is a string
+      2. Tests it with "hello" and prints "is string" if true
+    expected: "is string"

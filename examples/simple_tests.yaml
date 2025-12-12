@@ -1,0 +1,38 @@
+# Simple TypeScript Test Suite
+# Basic examples for getting started with praisonaibench-typescript
+
+tests:
+  - name: "hello_world"
+    language: "typescript"
+    prompt: "Write TypeScript code that prints 'Hello World'"
+    expected: "Hello World"
+  
+  - name: "basic_math"
+    language: "typescript"
+    prompt: "Write TypeScript code that calculates 15 * 23 and prints the result"
+    expected: "345"
+  
+  - name: "simple_function"
+    language: "typescript"
+    prompt: |
+      Write a TypeScript function called 'add' that takes two numbers and returns their sum.
+      Then call it with 5 and 3 and print the result.
+    expected: "8"
+  
+  - name: "string_manipulation"
+    language: "typescript"
+    prompt: |
+      Write TypeScript code that:
+      1. Creates a string "TypeScript Programming"
+      2. Converts it to uppercase
+      3. Prints the result
+    expected: "TYPESCRIPT PROGRAMMING"
+  
+  - name: "array_operations"
+    language: "typescript"
+    prompt: |
+      Write TypeScript code that:
+      1. Creates an array [1, 2, 3, 4, 5]
+      2. Calculates the sum using reduce
+      3. Prints the result
+    expected: "15"
