@@ -6,6 +6,7 @@
 
 import { BaseEvaluator } from './base-evaluator';
 import { TypeScriptEvaluator } from './evaluator';
+import { HTMLEvaluator } from './evaluators/html-evaluator';
 
 /**
  * Manages evaluator plugins for different languages.
@@ -18,22 +19,37 @@ export class PluginManager {
   }
 
   /**
-   * Load built-in evaluators (TypeScript/JavaScript).
+   * Load built-in evaluators (TypeScript/JavaScript and HTML).
    */
   private loadBuiltinEvaluators(): void {
+    // Load TypeScript evaluator
     try {
       const tsEvaluator = new TypeScriptEvaluator();
 
       // Register with multiple aliases
       this.register('typescript', tsEvaluator);
       this.register('ts', tsEvaluator);
-      this.register('javascript', tsEvaluator);
-      this.register('js', tsEvaluator);
 
-      console.log('  ✅ Loaded built-in TypeScript/JavaScript evaluator');
+      console.log('  ✅ Loaded built-in TypeScript evaluator');
     } catch (error) {
       console.warn(
         `⚠️  Could not load TypeScript evaluator: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
+
+    // Load HTML evaluator
+    try {
+      const htmlEvaluator = new HTMLEvaluator();
+
+      // Register with multiple aliases
+      this.register('html', htmlEvaluator);
+      this.register('javascript', htmlEvaluator);
+      this.register('js', htmlEvaluator);
+
+      console.log('  ✅ Loaded built-in HTML/JavaScript evaluator');
+    } catch (error) {
+      console.warn(
+        `⚠️  Could not load HTML evaluator: ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }

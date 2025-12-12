@@ -1,8 +1,8 @@
 # PraisonAI Bench TypeScript
 
-🚀 **A powerful LLM benchmarking framework for TypeScript code generation**
+🚀 **A powerful multi-provider LLM benchmarking framework**
 
-Benchmark any OpenAI-compatible model with automatic code evaluation, TypeScript execution, and comprehensive HTML reports.
+Benchmark any LLM with automatic code evaluation, TypeScript/HTML execution, and comprehensive reports. Supports **OpenAI, Anthropic, Google, xAI, Mistral, and Groq** via Vercel AI SDK.
 
 [![Node.js 16+](https://img.shields.io/badge/node-16+-green.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -13,7 +13,7 @@ Benchmark any OpenAI-compatible model with automatic code evaluation, TypeScript
 
 | Feature | Description |
 |---------|-------------|
-| **🤖 Any OpenAI Model** | GPT-4o, GPT-4o-mini, GPT-3.5-turbo, etc. |
+| **🤖 Multi-Provider** | OpenAI, Anthropic, Google, xAI, Mistral, Groq |
 | **📊 Multi-Stage Evaluation** | Syntax validation, code execution, output comparison |
 | **💰 Cost & Token Tracking** | Automatic token usage and cost calculation |
 | **📈 HTML Reports** | Beautiful dashboard reports with charts |
@@ -21,6 +21,17 @@ Benchmark any OpenAI-compatible model with automatic code evaluation, TypeScript
 | **🔌 Plugin System** | Extensible evaluators for any language |
 | **🎯 Test Suites** | YAML/JSON test suite support |
 | **🔄 Retry Logic** | Automatic retries with exponential backoff |
+
+## 🤖 Supported Providers
+
+| Provider | Models | Env Variable |
+|----------|--------|--------------|
+| **OpenAI** | gpt-4o, gpt-4o-mini, gpt-4-turbo, o1, o1-mini | `OPENAI_API_KEY` |
+| **Anthropic** | claude-3-5-sonnet-latest, claude-3-opus-latest, claude-3-haiku | `ANTHROPIC_API_KEY` |
+| **Google** | gemini-2.0-flash-exp, gemini-1.5-pro, gemini-1.5-flash | `GOOGLE_GENERATIVE_AI_API_KEY` |
+| **xAI** | grok-beta, grok-2-1212 | `XAI_API_KEY` |
+| **Mistral** | mistral-large-latest, mistral-medium-latest | `MISTRAL_API_KEY` |
+| **Groq** | llama-3.1-70b-versatile, mixtral-8x7b-32768 | `GROQ_API_KEY` |
 
 ## 📊 Evaluation System
 
@@ -43,23 +54,41 @@ npm install -g praisonaibench-typescript
 npm install praisonaibench-typescript
 ```
 
-### Set API Key
+### Set API Keys
 
 ```bash
-export OPENAI_API_KEY=your_api_key_here
+# OpenAI (default)
+export OPENAI_API_KEY=your_openai_key
+
+# Or use other providers
+export ANTHROPIC_API_KEY=your_anthropic_key
+export GOOGLE_GENERATIVE_AI_API_KEY=your_google_key
+export GROQ_API_KEY=your_groq_key
 ```
 
 ### Run Your First Test
 
 ```bash
-# Single test
+# Single test with OpenAI (default)
 praisonaibench --test "Write TypeScript code that prints Hello World"
 
 # With specific model
 praisonaibench --test "Calculate factorial of 5" --model gpt-4o-mini
 
-# Run test suite
+# Use Anthropic Claude
+praisonaibench --test "Write a hello world" --model claude-3-5-sonnet-latest
+
+# Use Google Gemini
+praisonaibench --test "Write a hello world" --model gemini-1.5-flash
+
+# Cross-model comparison
+praisonaibench --cross-model "Write hello world" --models openai/gpt-4o,anthropic/claude-3-5-sonnet-latest
+
+# Run test suite with report
 praisonaibench --suite tests.yaml --report
+
+# List available providers
+praisonaibench --list-providers
 ```
 
 ### Verify Installation
