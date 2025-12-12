@@ -8,7 +8,7 @@ Create evaluators for **any programming language** in a single file!
 
 ```typescript
 // my-evaluator.ts
-import { BaseEvaluator, EvaluationResult } from 'praisonaibench-typescript';
+import { BaseEvaluator, EvaluationResult } from 'praisonaibench';
 
 export class PythonEvaluator extends BaseEvaluator {
   getLanguage(): string {
@@ -53,7 +53,7 @@ export class PythonEvaluator extends BaseEvaluator {
     }
   },
   "peerDependencies": {
-    "praisonaibench-typescript": ">=0.1.0"
+    "praisonaibench": ">=0.1.0"
   }
 }
 ```
@@ -139,7 +139,7 @@ interface FeedbackItem {
 ## Example: Python Evaluator
 
 ```typescript
-import { BaseEvaluator, EvaluationResult } from 'praisonaibench-typescript';
+import { BaseEvaluator, EvaluationResult } from 'praisonaibench';
 import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -293,7 +293,7 @@ export class PythonEvaluator extends BaseEvaluator {
 You can also register evaluators programmatically:
 
 ```typescript
-import { PluginManager, BaseEvaluator } from 'praisonaibench-typescript';
+import { PluginManager, BaseEvaluator } from 'praisonaibench';
 
 const manager = new PluginManager();
 

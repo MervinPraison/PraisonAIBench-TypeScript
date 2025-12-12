@@ -7,7 +7,7 @@ Benchmark any LLM with automatic code evaluation, TypeScript/HTML execution, and
 [![Node.js 16+](https://img.shields.io/badge/node-16+-green.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
-[![npm version](https://img.shields.io/npm/v/praisonaibench-typescript.svg)](https://www.npmjs.com/package/praisonaibench-typescript)
+[![npm version](https://img.shields.io/npm/v/praisonaibench.svg)](https://www.npmjs.com/package/praisonaibench)
 
 ## 🎯 Features
 
@@ -48,10 +48,10 @@ Benchmark any LLM with automatic code evaluation, TypeScript/HTML execution, and
 
 ```bash
 # Install globally
-npm install -g praisonaibench-typescript
+npm install -g praisonaibench
 
 # Or install locally
-npm install praisonaibench-typescript
+npm install praisonaibench
 ```
 
 ### Set API Keys
@@ -197,7 +197,7 @@ Total: 30/100 ❌ FAILED
 ### TypeScript API
 
 ```typescript
-import { TypeScriptEvaluator } from 'praisonaibench-typescript';
+import { TypeScriptEvaluator } from 'praisonaibench';
 
 // Create evaluator
 const evaluator = new TypeScriptEvaluator(5); // 5 second timeout
@@ -424,7 +424,7 @@ TS_NODE_EXECUTABLE=/path/to/ts-node  # Leave empty for npx
 ### Programmatic Configuration
 
 ```typescript
-import { TypeScriptEvaluator } from 'praisonaibench-typescript';
+import { TypeScriptEvaluator } from 'praisonaibench';
 
 // Custom timeout
 const evaluator = new TypeScriptEvaluator(10);
@@ -441,7 +441,7 @@ const evaluator = new TypeScriptEvaluator(
 ### Plugin Structure
 
 ```
-praisonaibench-typescript/
+praisonaibench/
 ├── src/
 │   ├── index.ts              # Plugin exports
 │   ├── evaluator.ts          # Main evaluator class
@@ -484,7 +484,7 @@ Contributions are welcome! Here's how:
 ```bash
 # Clone repository
 git clone https://github.com/MervinPraison/PraisonAIBench-TypeScript
-cd praisonaibench-typescript
+cd praisonaibench
 
 # Install dependencies
 npm install
@@ -502,7 +502,7 @@ MIT License - see LICENSE file for details.
 
 ## 🔗 Links
 
-- [npm Package](https://www.npmjs.com/package/praisonaibench-typescript) - Install from npm
+- [npm Package](https://www.npmjs.com/package/praisonaibench) - Install from npm
 - [PraisonAI Bench](https://github.com/MervinPraison/praisonaibench) - Main project
 - [Plugin System Documentation](https://github.com/MervinPraison/praisonaibench/blob/main/PLUGIN_SYSTEM.md)
 - [Issue Tracker](https://github.com/MervinPraison/PraisonAIBench-TypeScript/issues)

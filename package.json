@@ -1,7 +1,7 @@
 {
-  "name": "praisonaibench-typescript",
+  "name": "praisonaibench",
   "version": "0.1.0",
-  "description": "TypeScript LLM Benchmarking Framework - Test and evaluate LLM code generation",
+  "description": "Multi-provider LLM Benchmarking Framework - Evaluate code generation with OpenAI, Anthropic, Google, xAI, Mistral, Groq",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -40,12 +40,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MervinPraison/PraisonAIBench-TypeScript.git"
+    "url": "git+https://github.com/MervinPraison/praisonaibench.git"
   },
   "bugs": {
-    "url": "https://github.com/MervinPraison/PraisonAIBench-TypeScript/issues"
+    "url": "https://github.com/MervinPraison/praisonaibench/issues"
   },
-  "homepage": "https://github.com/MervinPraison/PraisonAIBench-TypeScript#readme",
+  "homepage": "https://github.com/MervinPraison/praisonaibench#readme",
   "engines": {
     "node": ">=16.0.0"
   },
